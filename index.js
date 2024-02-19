@@ -1,10 +1,9 @@
 function generarChat() {
   // Crear un elemento div para el contenedor del chat
   const chatContainer = document.createElement("div");
-  chatContainer.style.width = "100%";
-  chatContainer.style.height = "100%";
+  chatContainer.style.width = "98vw";
+  chatContainer.style.height = "98vh";
   chatContainer.style.border = "1px solid #ccc";
-  chatContainer.style.margin = "auto";
   chatContainer.style.display = "flex";
   chatContainer.style.flexDirection = "column";
   chatContainer.style.justifyContent = "space-between"; 
@@ -51,19 +50,19 @@ function generarChat() {
 
   // Agregar un evento click para alternar el modo oscuro
   darkModeButton.addEventListener("click", function () {
-    isDarkMode = !isDarkMode; // Alternar el modo oscuro
+    isDarkMode = !isDarkMode; 
     if (isDarkMode) {
-      chatContainer.style.backgroundColor = "#333"; // Cambiar el color de fondo del contenedor
-      darkModeButton.textContent = "Modo Claro"; // Cambiar el texto del botón
+      chatContainer.style.backgroundColor = "#333"; 
+      darkModeButton.textContent = "Modo Claro"; 
     } else {
-      chatContainer.style.backgroundColor = "#fff"; // Restablecer el color de fondo del contenedor
-      darkModeButton.textContent = "Modo Oscuro"; // Restablecer el texto del botón
+      chatContainer.style.backgroundColor = "#fff";
+      darkModeButton.textContent = "Modo Oscuro"; 
     }
   });
 
   // Crear un elemento para el contador de caracteres
   const characterCount = document.createElement("span");
-  characterCount.textContent = "0/140"; // Inicializar el contador
+  characterCount.textContent = "0/140"; 
   characterCount.style.marginLeft = "10px";
   inputBar.appendChild(characterCount);
 
