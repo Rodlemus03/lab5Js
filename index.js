@@ -1,8 +1,8 @@
 function generarChat() {
   // Crear un elemento div para el contenedor del chat
   const chatContainer = document.createElement("div");
-  chatContainer.style.width = "80%";
-  chatContainer.style.height = "600px";
+  chatContainer.style.width = "100%";
+  chatContainer.style.height = "100%";
   chatContainer.style.border = "1px solid #ccc";
   chatContainer.style.margin = "auto";
   chatContainer.style.display = "flex";
@@ -33,6 +33,33 @@ function generarChat() {
     inputField.style.border = "1px solid #ccc";
     inputField.style.borderRadius = "5px";
     inputField.style.padding = "5px";
+
+    
+  // Crear un botón para alternar el modo oscuro
+  const darkModeButton = document.createElement("button");
+  darkModeButton.textContent = "Modo Oscuro";
+  darkModeButton.style.marginLeft = "10px";
+  darkModeButton.style.padding = "5px 10px";
+  darkModeButton.style.border = "none";
+  darkModeButton.style.borderRadius = "5px";
+  darkModeButton.style.backgroundColor = "#333";
+  darkModeButton.style.color = "#fff";
+  darkModeButton.style.cursor = "pointer";
+
+  // Bandera para el modo oscuro
+  let isDarkMode = false;
+
+  // Agregar un evento click para alternar el modo oscuro
+  darkModeButton.addEventListener("click", function () {
+    isDarkMode = !isDarkMode; // Alternar el modo oscuro
+    if (isDarkMode) {
+      chatContainer.style.backgroundColor = "#333"; // Cambiar el color de fondo del contenedor
+      darkModeButton.textContent = "Modo Claro"; // Cambiar el texto del botón
+    } else {
+      chatContainer.style.backgroundColor = "#fff"; // Restablecer el color de fondo del contenedor
+      darkModeButton.textContent = "Modo Oscuro"; // Restablecer el texto del botón
+    }
+  });
 
   // Crear un elemento para el contador de caracteres
   const characterCount = document.createElement("span");
@@ -128,6 +155,8 @@ respuestaGenerada(mensaje).then(respuesta => {
   inputBar.appendChild(sendButton);
   chatContainer.appendChild(messageList);
   chatContainer.appendChild(inputBar);
+  inputBar.appendChild(darkModeButton);
+
 
   document.body.appendChild(chatContainer);
 }
