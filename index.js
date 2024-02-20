@@ -1,7 +1,7 @@
 function obtenerDatosDeAPI() {
   // URL de la API
   const url = "https://chat.arpanetos.lol/messages";
-
+//
   return fetch(url)
     .then((response) => {
       if (!response.ok) {
