@@ -1,4 +1,44 @@
-function generarChat() {
+function obtenerDatosDeAPI() {
+  // URL de la API
+  const url = "https://chat.arpanetos.lol/messages";
+
+  return fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("La solicitud no fue exitosa");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      return error;
+    });
+}
+
+async function generarChat() {
+  // Obtener datos de la API
+  let lista = [];
+  try {
+    lista = await obtenerDatosDeAPI();
+    console.log(lista); // Asegúrate de que la lista se haya cargado correctamente
+  } catch (error) {
+    console.error("Error al obtener datos de la API:", error);
+  }
+
+  for (let i = 0; i < lista.length; i++) {
+    // Si el mensaje es del usuario, lo muestra a la derecha (estilo azul), de lo contrario, a la izquierda
+    agregarMensaje(
+      lista[i].message,
+      false,
+      lista[i].username,
+      lista[i].created_at
+    );
+  }
+
+  //END API
+
   // Crear un elemento div para el contenedor del chat
   const chatContainer = document.createElement("div");
   chatContainer.style.width = "98vw";
@@ -87,43 +127,99 @@ function generarChat() {
 
   sendButton.addEventListener("click", function () {
     const mensajeUsuario = inputField.value;
-    agregarMensaje(mensajeUsuario, true);
-    const mensajeRespuesta = respuestaGenerada(mensajeUsuario);
-    agregarMensaje(mensajeRespuesta, false);
+    const ahora=new Date();
+    const horaActual=ahora.toLocaleTimeString();
+    agregarMensaje(mensajeUsuario, true,"Julio",horaActual);
     inputField.value = "";
   });
 
-  function agregarMensaje(mensaje, usuario) {
+  function agregarMensaje(mensaje, usuarioBandera, nombreUsuario, fechaHora) {
     // Crear un elemento div para representar el mensaje
     const messageItem = document.createElement("div");
     messageItem.style.borderRadius = "10px";
     messageItem.style.padding = "5px 10px";
     messageItem.style.marginBottom = "10px";
     messageItem.style.wordWrap = "break-word";
-    messageItem.style.maxWidth = "75%";
 
-    if (usuario) {
-      messageItem.style.marginLeft = "auto";
-      messageItem.style.backgroundColor = "#1A8FE3";
-      messageItem.textContent = mensaje;
-      messageList.appendChild(messageItem);
-      ajustarAlturaMensaje(messageItem);
+    if (usuarioBandera) {
+  // Crear un contenedor para el mensaje del usuario
+  const userMessageContainer = document.createElement("div");
+  userMessageContainer.style.marginLeft = "auto";
+  userMessageContainer.style.marginBottom = "10px";
+  userMessageContainer.style.display = "flex";
+  userMessageContainer.style.width="75%"
+
+  userMessageContainer.style.flexDirection = "column";
+
+  // Crear un elemento para el nombre de usuario 
+  const userNameElement = document.createElement("span");
+  userNameElement.style.fontWeight = "bold";
+  userNameElement.textContent = nombreUsuario;
+
+  // Crear un elemento para el mensaje del usuario
+  const userMessageElement = document.createElement("div");
+  userMessageElement.style.borderRadius = "10px";
+  userMessageElement.style.padding = "5px 10px";
+  userMessageElement.style.wordWrap = "break-word";
+  userMessageElement.style.backgroundColor = "#1A8FE3";
+  userMessageElement.textContent = mensaje;
+
+  // Crear un elemento para la hora
+  const userTimeElement = document.createElement("span");
+  userTimeElement.style.fontSize = "10px";
+  userTimeElement.style.alignSelf = "flex-end";
+  userTimeElement.textContent = fechaHora;
+
+  // Añadir elementos al contenedor del mensaje del usuario
+  userMessageContainer.appendChild(userNameElement);
+  userMessageContainer.appendChild(userMessageElement);
+  userMessageContainer.appendChild(userTimeElement);
+
+  // Añadir el contenedor del mensaje del usuario a la lista de mensajes
+  messageList.appendChild(userMessageContainer);
+  ajustarAlturaMensaje(userMessageContainer);
+  messageList.scrollTop = messageList.scrollHeight;
+
     } else {
-      respuestaGenerada(mensaje).then((respuesta) => {
-        // Crear un elemento div para representar el mensaje de respuesta
-        const respuestaItem = document.createElement("div");
-        respuestaItem.style.borderRadius = "10px";
-        respuestaItem.style.padding = "5px 10px";
-        respuestaItem.style.marginBottom = "10px";
-        respuestaItem.style.wordWrap = "break-word";
-        respuestaItem.style.maxWidth = "75%";
-        respuestaItem.style.backgroundColor = "#eff1f3";
-        respuestaItem.style.marginLeft = "2px";
-        respuestaItem.textContent = respuesta;
-        messageList.appendChild(respuestaItem);
-        ajustarAlturaMensaje(respuestaItem);
+      respuestaGenerada(mensaje, nombreUsuario, fechaHora).then((respuesta) => {
+        // Crear un contenedor para la respuesta
+        const respuestaContainer = document.createElement("div");
+        respuestaContainer.style.marginBottom = "10px";
+        respuestaContainer.style.display = "flex";
+        respuestaContainer.style.width="75%"
+        respuestaContainer.style.flexDirection = "column";
+
+        // Crear un elemento para el nombre de usuario 
+        const NameElement = document.createElement("span");
+        NameElement.style.fontWeight = "bold";
+        NameElement.textContent = nombreUsuario;
+
+        // Crear un elemento para la respuesta
+        const respuestaElement = document.createElement("div");
+        respuestaElement.style.borderRadius = "10px";
+        respuestaElement.style.padding = "5px 10px";
+        respuestaElement.style.wordWrap = "break-word";
+        respuestaElement.style.backgroundColor = "#eff1f3";
+        respuestaElement.textContent = respuesta;
+
+        // Crear un elemento para la hora
+        const timeElement = document.createElement("span");
+        timeElement.style.fontSize = "10px";
+        timeElement.style.alignSelf = "flex-end";
+        timeElement.textContent = fechaHora;
+
+        // Añadir elementos al contenedor de la respuesta
+        respuestaContainer.appendChild(NameElement);
+        respuestaContainer.appendChild(respuestaElement);
+        respuestaContainer.appendChild(timeElement);
+
+        // Añadir el contenedor de la respuesta a la lista de mensajes
+        messageList.appendChild(respuestaContainer);
+        ajustarAlturaMensaje(respuestaContainer);
+        messageList.scrollTop = messageList.scrollHeight;
       });
     }
+
   }
 
   function ajustarAlturaMensaje(messageItem) {
@@ -132,11 +228,11 @@ function generarChat() {
     messageItem.style.height = contenidoHeight + "px";
   }
 
-  function respuestaGenerada(mensajeUsuario) {
+  function respuestaGenerada(mensajeUsuario, fecha) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         //LOGICA
-        const respuesta = "Hola mundo";
+        const respuesta = mensajeUsuario
         //LOGICA
         resolve(respuesta);
       }, 2000);
