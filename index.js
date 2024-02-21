@@ -54,10 +54,10 @@ async function generarChat() {
     console.error("Error al obtener datos de la API:", error);
   }
 
-  for (let i = lista.length-1; i > 0; i--) {
+  for (let i = lista.length - 1; i > 0; i--) {
     // Si el mensaje es del usuario, lo muestra a la derecha (estilo azul), de lo contrario, a la izquierda
     //let bandera = console.log(lista[i].username == "Julio");
-    let bandera=false;
+    let bandera = false;
     agregarMensaje(
       lista[i].message,
       bandera,
@@ -154,31 +154,43 @@ async function generarChat() {
   sendButton.style.color = "#fff";
   sendButton.style.cursor = "pointer";
 
-  sendButton.addEventListener("click", function () {
+  // Función para enviar mensaje
+  function enviarMensaje() {
     const mensajeUsuario = inputField.value;
     const ahora = new Date();
     const horaActual = ahora.toLocaleTimeString();
     agregarMensaje(mensajeUsuario, true, "Julio", horaActual);
-    enviarPost(
-      (data = {
-        username: "Julio",
-        message: mensajeUsuario,
-        created_at: horaActual,
-      })
-    );
+    enviarPost({
+      username: "Julio",
+      message: mensajeUsuario,
+      created_at: horaActual,
+    });
     inputField.value = "";
+  }
+
+  // Agregar evento de clic al botón de enviar
+  sendButton.addEventListener("click", enviarMensaje);
+
+  // Agregar evento de tecla "Enter" al campo de entrada para enviar mensaje
+  inputField.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      enviarMensaje();
+    }
   });
 
-  function agregarMensaje(mensaje, usuarioBandera, nombreUsuario, fechaHora) {
-
-    
+  function agregarMensaje(
+    mensaje,
+    usuarioBandera,
+    nombreUsuario,
+    fechaHora
+  ) {
     // Crear un elemento div para representar el mensaje
     const messageItem = document.createElement("div");
     messageItem.style.borderRadius = "10px";
     messageItem.style.padding = "5px 10px";
     messageItem.style.marginBottom = "10px";
     messageItem.style.wordWrap = "break-word";
-    if (usuarioBandera===true) {
+    if (usuarioBandera === true) {
       // Crear un contenedor para el mensaje del usuario
       const userMessageContainer = document.createElement("div");
       userMessageContainer.style.marginLeft = "auto";
@@ -217,43 +229,45 @@ async function generarChat() {
       ajustarAlturaMensaje(userMessageContainer);
       messageList.scrollTop = messageList.scrollHeight;
     } else {
-      respuestaGenerada(mensaje, nombreUsuario, fechaHora).then((respuesta) => {
-        // Crear un contenedor para la respuesta
-        const respuestaContainer = document.createElement("div");
-        respuestaContainer.style.marginBottom = "10px";
-        respuestaContainer.style.display = "flex";
-        respuestaContainer.style.width = "75%";
-        respuestaContainer.style.flexDirection = "column";
+      respuestaGenerada(mensaje, nombreUsuario, fechaHora).then(
+        (respuesta) => {
+          // Crear un contenedor para la respuesta
+          const respuestaContainer = document.createElement("div");
+          respuestaContainer.style.marginBottom = "10px";
+          respuestaContainer.style.display = "flex";
+          respuestaContainer.style.width = "75%";
+          respuestaContainer.style.flexDirection = "column";
 
-        // Crear un elemento para el nombre de usuario
-        const NameElement = document.createElement("span");
-        NameElement.style.fontWeight = "bold";
-        NameElement.textContent = nombreUsuario;
+          // Crear un elemento para el nombre de usuario
+          const NameElement = document.createElement("span");
+          NameElement.style.fontWeight = "bold";
+          NameElement.textContent = nombreUsuario;
 
-        // Crear un elemento para la respuesta
-        const respuestaElement = document.createElement("div");
-        respuestaElement.style.borderRadius = "10px";
-        respuestaElement.style.padding = "5px 10px";
-        respuestaElement.style.wordWrap = "break-word";
-        respuestaElement.style.backgroundColor = "#eff1f3";
-        respuestaElement.textContent = respuesta;
+          // Crear un elemento para la respuesta
+          const respuestaElement = document.createElement("div");
+          respuestaElement.style.borderRadius = "10px";
+          respuestaElement.style.padding = "5px 10px";
+          respuestaElement.style.wordWrap = "break-word";
+          respuestaElement.style.backgroundColor = "#eff1f3";
+          respuestaElement.textContent = respuesta;
 
-        // Crear un elemento para la hora
-        const timeElement = document.createElement("span");
-        timeElement.style.fontSize = "10px";
-        timeElement.style.alignSelf = "flex-end";
-        timeElement.textContent = fechaHora;
+          // Crear un elemento para la hora
+          const timeElement = document.createElement("span");
+          timeElement.style.fontSize = "10px";
+          timeElement.style.alignSelf = "flex-end";
+          timeElement.textContent = fechaHora;
 
-        // Añadir elementos al contenedor de la respuesta
-        respuestaContainer.appendChild(NameElement);
-        respuestaContainer.appendChild(respuestaElement);
-        respuestaContainer.appendChild(timeElement);
+          // Añadir elementos al contenedor de la respuesta
+          respuestaContainer.appendChild(NameElement);
+          respuestaContainer.appendChild(respuestaElement);
+          respuestaContainer.appendChild(timeElement);
 
-        // Añadir el contenedor de la respuesta a la lista de mensajes
-        messageList.appendChild(respuestaContainer);
-        ajustarAlturaMensaje(respuestaContainer);
-        messageList.scrollTop = messageList.scrollHeight;
-      });
+          // Añadir el contenedor de la respuesta a la lista de mensajes
+          messageList.appendChild(respuestaContainer);
+          ajustarAlturaMensaje(respuestaContainer);
+          messageList.scrollTop = messageList.scrollHeight;
+        }
+      );
     }
   }
 
@@ -282,3 +296,5 @@ async function generarChat() {
 
   document.body.appendChild(chatContainer);
 }
+
+generarChat();
