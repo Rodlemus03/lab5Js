@@ -24,8 +24,7 @@ function enviarPost(data) {
     });
 }
 
-// Llama a la función para enviar el POST
-enviarPost();
+
 
 function obtenerDatosDeAPI() {
   // URL de la API
@@ -57,8 +56,8 @@ async function generarChat() {
 
   for (let i = lista.length-1; i > 0; i--) {
     // Si el mensaje es del usuario, lo muestra a la derecha (estilo azul), de lo contrario, a la izquierda
-    let bandera = console.log(lista[i].username == "Julio");
-
+    //let bandera = console.log(lista[i].username == "Julio");
+    let bandera=false;
     agregarMensaje(
       lista[i].message,
       bandera,
